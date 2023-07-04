@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu/focal64"
+  
+    config.vm.define "ubuntu" do |ubuntu|
+      ubuntu.vm.hostname = "mz-server"
+      ubuntu.vm.provider "virtualbox" do |vb|
+        vb.name = "docker-server"
+        vb.cpus = 4
+        vb.memory = 8192
+      end
+      ubuntu.vm.network "private_network", ip: "192.168.33.10"
+      ubuntu.vm.provision "shell", inline: <<-SCRIPT
+        sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+        sudo useradd mzuser -m -s /bin/bash
+        sudo usermod -a -G sudo mzuser
+        echo mzuser:mzuser | sudo chpasswd
+        sudo systemctl restart sshd
+      SCRIPT
+    end
+  end
+  
