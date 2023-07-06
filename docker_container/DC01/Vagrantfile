@@ -26,8 +26,9 @@ Vagrant.configure("2") do |config|
       sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
       sudo usermod -a -G docker vagrant
       docker login -u abhyuni --password-stdin < /vagrant/env/docker_token
-      docker run -it -d -p 8080:80 --name web-server httpd
-      docker cp /vagrant/htdocs web-server:/usr/local/apache2/htdocs
+      docker volume create --label service=web --label creater=hyun web_src_vol
+      sudo cp -r /vagrant/htdocs/* /var/lib/docker/volumes/web_src_vol/_data/
+      docker run -d -p 8080:80 -v web_src_vol:/usr/local/apache2/htdocs --name web-server1 httpd
     SCRIPT
   end
 end
