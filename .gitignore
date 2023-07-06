@@ -11,4 +11,7 @@
 ### Vagrant Patch ###
 *.box
 
+### Docker Token ###
+docker_token
+
 # End of https://www.toptal.com/developers/gitignore/api/vagrant

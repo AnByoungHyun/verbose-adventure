@@ -38,3 +38,6 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 docker -v
 # Docker version 24.0.2, build cb74dfc
 ```
+
+### Docker Token 등록
+env/docker_token 파일을 생성하여 [docker hub](https://hub.docker.com/settings/security) 사이트 접속하여 생성한 Token 을 등록합니다.
