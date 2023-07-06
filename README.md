@@ -31,3 +31,11 @@ echo \
   sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
   ```
   docker -v
+
+  ### Docker Token 등록
+  1. DC01 디렉토리로 이동
+  2. DC01 디렉토리에서 env 디렉토리 생성
+  3. env 디렉토리 안에 docker_token 파일 생성
+  4.[docker hub](https://hub.docker.com/settings/security) 사이트 접속
+  5.docker token 생성 후 발급된 token을 docker_token에 기록 후 저장
+  
