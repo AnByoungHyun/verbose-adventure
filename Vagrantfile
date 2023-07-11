@@ -10,7 +10,8 @@ Vagrant.configure("2") do |config|
       vb.cpus = 4
       vb.memory = 8192
     end
-    ubuntu.vm.network "forwarded_port", guest: 8080, host: 80
+    ubuntu.vm.network "forwarded_port", guest: 8080, host: 80, host_ip: "127.0.0.1"
+    ubuntu.vm.network "forwarded_port", guest: 8081, host: 80, host_ip: "127.0.0.2"
     ubuntu.vm.network "private_network", ip: "192.168.33.10"
     ubuntu.vm.provision "shell", inline: <<-SCRIPT
       sudo apt-get update -y
@@ -29,6 +30,7 @@ Vagrant.configure("2") do |config|
       docker volume create --label service=web --label creater=hyun web_src_vol
       sudo cp -r /vagrant/htdocs/* /var/lib/docker/volumes/web_src_vol/_data/
       docker run -d -p 8080:80 -v web_src_vol:/usr/local/apache2/htdocs --name web-server1 httpd
+      docker run -d -p 8081:80 -v web_src_vo1:/usr/share/nginx/html --name web-server2 nginx
     SCRIPT
   end
 end
