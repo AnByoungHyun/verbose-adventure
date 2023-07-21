@@ -46,6 +46,13 @@ Vagrant.configure("2") do |config|
       sudo apt-get update -y
       sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
       sudo usermod -a -G docker vagrant
+      sudo tee /etc/docker/daemon.json << EOF
+        { "insecure-registries": ["http://repo.image.co.kr"] }
+      EOF
+      sudo systemctl restart docker
+      sudo docker run -d --restart=always --name repository \
+        -e REGISTRY_HTTP_ADDR=0.0.0.0:80 -p 80:80 registry
+      sudo su - -c 'echo "192.168.223.10  repo.image.co.kr" >> /etc/hosts'
     SCRIPT
   end
 
@@ -72,6 +79,11 @@ Vagrant.configure("2") do |config|
       sudo apt-get update -y
       sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
       sudo usermod -a -G docker vagrant
+      sudo tee /etc/docker/daemon.json << EOF
+        { "insecure-registries": ["http://repo.image.co.kr"] }
+      EOF
+      sudo systemctl restart docker
+      sudo su - -c 'echo "192.168.223.10  repo.image.co.kr" >> /etc/hosts'
     SCRIPT
   end
 
@@ -90,6 +102,20 @@ Vagrant.configure("2") do |config|
       sudo sysctl -p
       sudo iptables -t nat -A POSTROUTING -s 192.168.223.20 -o enp0s9 -j LOG --log-prefix='[MASQ] '
       sudo iptables -t nat -A POSTROUTING -s 192.168.223.20 -o enp0s9 -j MASQUERADE
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 18.210.197.188 -j LOG --log-prefix='[DROP] '
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 18.210.197.188 -j DROP
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 18.206.20.10 -j LOG --log-prefix='[DROP] '
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 18.206.20.10 -j DROP
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 3.228.146.75 -j LOG --log-prefix='[DROP] '
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 3.228.146.75 -j DROP
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 104.18.123.25 -j LOG --log-prefix='[DROP] '
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 104.18.123.25 -j DROP
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 44.205.64.79 -j LOG --log-prefix='[DROP] '
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 44.205.64.79 -j DROP
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 34.205.13.154 -j LOG --log-prefix='[DROP] '
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 34.205.13.154 -j DROP
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 3.216.34.172 -j LOG --log-prefix='[DROP] '
+      sudo iptables -t filter -A FORWARD -s 192.168.223.20 -d 3.216.34.172 -j DROP
     SCRIPT
   end
 
