@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy
+  labels:
+    app: deploy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: web
+      type: deploy
+  template:
+    metadata:
+      labels:
+        app: web
+        type: deploy
+        version: "v1.2"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: docker-pull-secret
