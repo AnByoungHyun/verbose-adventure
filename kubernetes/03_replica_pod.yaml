@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset
+  labels:
+    type: replica
+spec:
+  replicas: 3
+  selector: # replicas 수에 해당하는 파드가 생성되었는지 확인 할 때
+    matchLabels: # matchLabels 에 작성한 라벨 정보와 일치하는 파드의 수를 확인 
+      app: web
+  template:
+    metadata:
+      name: replica-template
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+      - name: docker-pull-secret

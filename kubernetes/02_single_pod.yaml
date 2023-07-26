@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod-httpd
+  labels:
+    app: web
+    app-type: apache
+spec:
+  hostAliases:
+  - hostnames:
+    - "domain.co.kr"
+    ip: 127.0.0.1
+  - hostnames: 
+    - "ping.google.com"
+    ip: 8.8.8.8
+  nodeName: kube-worker-node1
+  containers:
+  - name: apache-container
+    image: httpd:latest
+    env:
+      - name: hello
+        value: hi
+      - name: username
+        value: tester
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "250m"
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: tmpfs
+      mountPath: /usr/local/apache2/htdocs/
+  - name: alpine
+    image: alpine:latest
+    args:
+    - /bin/sh
+    - -c
+    - "while true; do echo 'running'; sleep 10; done"
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+    volumeMounts:
+    - name: tmpfs
+      mountPath: /tmp/
+  imagePullSecrets:
+  - name: docker-pull-secret
+  volumes:
+  - name: tmpfs
+    emptyDir: {}

@@ -1,0 +1,46 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+  config.vm.define "vmx1" do |vmx1|
+    vmx1.vm.hostname = "vmx1"
+    vmx1.vm.provider "virtualbox" do |vb|
+      vb.name = "vmx1"
+      vb.cpus = 4
+      vb.memory = 8192
+      vb.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
+    end
+    vmx1.vm.network "private_network", ip: "192.168.99.9", virtualbox__intnet: true
+    vmx1.vm.provision "shell", inline: <<-SCRIPT
+      sudo apt-get update -y
+      sudo apt-get install -y qemu qemu-kvm libvirt-daemon \
+        libvirt-clients bridge-utils virt-manager
+      sudo usermod -a -G kvm vagrant
+      sudo usermod -a -G libvirt vagrant
+      wget http://dl-cdn.alpinelinux.org/alpine/v3.8/releases/x86_64/alpine-virt-3.8.5-x86_64.iso
+      sudo mv alpine-virt-3.8.5-x86_64.iso /var/lib/libvirt/images/
+    SCRIPT
+  end
+
+  config.vm.box = "ubuntu/focal64"
+  config.vm.define "vmx2" do |vmx2|
+    vmx2.vm.hostname = "vmx2"
+    vmx2.vm.provider "virtualbox" do |vb|
+      vb.name = "vmx2"
+      vb.cpus = 4
+      vb.memory = 8192
+      vb.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
+    end
+    vmx2.vm.network "private_network", ip: "192.168.99.9", virtualbox__intnet: true
+    vmx2.vm.provision "shell", inline: <<-SCRIPT
+      sudo apt-get update -y
+      sudo apt-get install -y qemu qemu-kvm libvirt-daemon \
+        libvirt-clients bridge-utils virt-manager
+      sudo usermod -a -G kvm vagrant
+      sudo usermod -a -G libvirt vagrant
+      wget http://dl-cdn.alpinelinux.org/alpine/v3.8/releases/x86_64/alpine-virt-3.8.5-x86_64.iso
+      sudo mv alpine-virt-3.8.5-x86_64.iso /var/lib/libvirt/images/
+    SCRIPT
+  end
+end
