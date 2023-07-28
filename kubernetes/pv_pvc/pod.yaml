@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vol-pod1
+  labels:
+    name: vol-pod
+spec:
+  containers:
+  - name: vol-pod
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    volumeMounts:
+    - name: nfs-volume
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: nfs-volume
+    persistentVolumeClaim:
+      claimName: nfs-pvc1
+  imagePullSecrets:
+  - name: docker-pull-secret

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-httpd-static-web
+  labels:
+    version: "2.1"
+    date: "2023-07"
+spec:
+  selector:
+    matchLabels:
+      app: static-web
+      server: httpd
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: static-web
+        server: httpd
+    spec:
+      containers:
+      - name: httpd-static-web
+        image: abhyuni/httpd:2.1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: docker-pull-secret

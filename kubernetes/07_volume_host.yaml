@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vol-pod
+  labels:
+    name: vol-pod
+spec:
+  nodeName: kube-worker-node2
+  containers:
+  - name: vol-pod
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    volumeMounts:
+    - name: host-volume
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: host-volume
+    hostPath:
+      path: /tmp/pod
+      type: DirectoryOrCreate
+  imagePullSecrets:
+  - name: docker-pull-secret
