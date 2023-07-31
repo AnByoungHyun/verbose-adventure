@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: first-app
   labels:
-    name: first-app
+    app: first-app
 spec:
   containers:
   - name: first-app
@@ -22,7 +22,7 @@ kind: Pod
 metadata:
   name: second-app
   labels:
-    name: second-app
+    app: second-app
 spec:
   containers:
   - name: second-app
@@ -64,23 +64,32 @@ metadata:
   name: myingress
   labels:
     name: myingress
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: "/"
-    kubernetes.io/ingress.class: nginx
 spec:
+  ingressClassName: nginx
   rules:
-  - host: "example.com"
+  - host: "kube.web.co.kr"
     http:
       paths:
       - pathType: Prefix
-        path: "/first"
+        path: /
         backend:
           service:
             name: first-service
             port: 
               number: 80
       - pathType: Prefix
-        path: "/second"
+        path: /first
+        backend:
+          service:
+            name: first-service
+            port: 
+              number: 80
+      - pathType: Prefix
+        path: /second
         backend:
           service:
             name: second-service
@@ -101,3 +110,14 @@ spec:
 
 # git clone https://github.com/kubernetes/ingress-nginx.git
 # kubectl apply -f ingress-nginx/deploy/static/provider/baremetal
+
+
+# ingress 에 작성한 spec.rules[].host 정보와 http request 헤더의 host 정보가
+# 일치해야 rule 에 의한 서비스가 이루어짐.
+
+# 내부 서비스 구성이 다음과 같은 경우 LB 에서 host 정보를 변경하기 위한 추가 작업이
+# 필요함
+#     Client ---> Loadbalancer ---> Ingress ---> Service ---> pods
+# nginx 에서는 proxy_pass 구성 밑에 proxy_set_header Host <host> 가 필요
+# 또는 proxy_pass 에 upstream 정보와 매치 시키는 부분을 ingress 의 host 로 매치
+# 시키는 것도 가능(당연히 upstream 도 ingress 의 host 로 수정해야 함)
