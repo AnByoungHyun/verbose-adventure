@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: "/"
+  name: ingress-kube-home-com
+  labels:
+    app: kube-home-com
+    name: ingress-kube-home-com
+spec:
+  defaultBackend:
+    service:
+      name: service-kube-home-com-main
+      port:
+        number: 80
+  ingressClassName: nginx
+  rules:
+  - host: kube.home.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/main"
+        backend:
+          service:
+            name: service-kube-home-com-main
+            port: 
+              number: 80
+      - pathType: Prefix
+        path: "/test"
+        backend:
+          service:
+            name: service-kube-home-com-test
+            port: 
+              number: 80

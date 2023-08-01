@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-kube-home-com-main
+  labels:
+    app: kube-home-com
+    name: deploy-kube-home-com
+    path: main
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kube-home-com
+      resource: deployment-pod
+      path: main
+  template:
+    metadata:
+      labels:
+        app: kube-home-com
+        resource: deployment-pod
+        path: main
+    spec:
+      containers:
+      - name: container-kube-home-com
+        image: nginx:latest
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nfs-volume
+          mountPath: /usr/share/nginx/html
+      imagePullSecrets:
+      - name: docker-pull-secret
+      volumes:
+      - name: nfs-volume
+        persistentVolumeClaim:
+          claimName: nfs-pvc1
+        

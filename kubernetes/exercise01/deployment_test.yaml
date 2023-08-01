@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-kube-home-com-test
+  labels:
+    app: kube-home-com
+    name: deploy-kube-home-com
+    path: test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kube-home-com
+      resource: deployment-pod
+      path: test
+  template:
+    metadata:
+      labels:
+        app: kube-home-com
+        resource: deployment-pod
+        path: test
+    spec:
+      containers:
+      - name: container-kube-home-com
+        image: nginx:latest
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: docker-pull-secret
