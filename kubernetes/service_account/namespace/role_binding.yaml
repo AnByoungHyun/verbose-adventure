@@ -2,12 +2,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: user1-rolebinding
-  namespace: default
+  namespace: user-space
 subjects:
 - apiGroup: ""
   kind: ServiceAccount
   name: user1
-  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
