@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: deploy-read-rolebinding
+  namespace: default
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: deploy-read-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: deploy-read-role

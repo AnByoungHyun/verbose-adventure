@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: deploy-read-user
+secrets:
+  - apiVersion: v1
+    kind: Secret
+    name: deploy-read-user-secret
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: deploy-read-user-secret
+  annotations:
+    kubernetes.io/service-account.name: deploy-read-user

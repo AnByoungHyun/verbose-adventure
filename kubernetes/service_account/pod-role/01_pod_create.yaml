@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: role-test-pod
+  labels:
+    name: role-test-pod
+    add: label
+spec:
+  containers:
+  - name: role-test-pod
+    image: nginx:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+  imagePullSecrets:
+  - name: docker-pull-secret
