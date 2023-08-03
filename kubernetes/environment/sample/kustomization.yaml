@@ -1,0 +1,4 @@
+resources:
+- nginx_config_map.yaml
+- nginx_ssl_tls_secret.yaml
+- nginx_pod.yaml
