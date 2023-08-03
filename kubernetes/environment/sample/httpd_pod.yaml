@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-ssl-tls-pod
+  labels:
+    app: httpd-ssl-tls-pod
+spec:
+  containers:
+  - name: httpd-ssl-tls-pod
+    image: httpd:latest
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 443
+    volumeMounts:
+    - name: httpd-config
+      mountPath: /usr/local/apache2/conf/httpd.conf
+      subPath: httpd.conf
+      readOnly: true
+    - name: httpd-ssl-config
+      mountPath: /usr/local/apache2/conf/extra/httpd-ssl.conf
+      subPath: httpd-ssl.conf
+      readOnly: true
+    - name: httpd-ssl-tls
+      mountPath: /usr/local/apache2/ssl/
+      readOnly: true
+  volumes:
+  - name: httpd-config
+    configMap:
+      name: httpd-config-map
+  - name: httpd-ssl-config
+    configMap:
+      name: httpd-ssl-config-map
+  - name: httpd-ssl-tls
+    secret:
+      secretName: nginx-ssl-tls-secret
+  imagePullSecrets:
+  - name: docker-pull-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-ssl-service
+spec:
+  type: NodePort
+  selector:
+    app: httpd-ssl-tls-pod
+  ports:
+  - port: 443
+    targetPort: 443
