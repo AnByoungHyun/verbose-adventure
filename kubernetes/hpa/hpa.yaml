@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  selector:
+    matchLabels:
+      app: my-deployment
+  template:
+    metadata:
+      labels:
+        app: my-deployment
+    spec:
+      containers:
+      - name: hpa-test
+        image: httpd
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+      imagePullSecrets:
+      - name: docker-pull-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpa-deploy-service
+spec:
+  selector:
+    app: my-deployment
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-hpa
+spec:
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 30 # 안정화 된 후 30 초 이후에 스케일다운 진행
+      policies: # 10초 간격으로 1개 파드씩 삭제
+      - type: Pods
+        value: 1
+        periodSeconds: 10
+      selectPolicy: Min
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 10
