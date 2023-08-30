@@ -91,7 +91,6 @@ SELECT CAST('2023-01-01' AS DATE), CAST('2023/01/01' AS DATE)
      , CAST('2023.01.01' AS DATE);
 
 
-
 SELECT STR_TO_DATE('1990-01-01', '%Y-%m-%d');
 
 # 고용일이 1990년도에 해당하는 사원 조회
@@ -408,3 +407,24 @@ SELECT *
          WHERE YEAR(d.to_date) = 9999
            AND YEAR(t.to_date) = 9999) as 부서직무별T
  ORDER BY 부서코드 IS NULL, 부서코드, 직무명 IS NULL, 직무명;
+
+
+
+SELECT old.emp_no as 사번
+     , old.dept_no as 이전부서
+     , d1.dept_name as 이전부서명
+     , new.dept_no as 현재부서
+     , d2.dept_name as 현재부서명
+  FROM dept_emp old
+ INNER JOIN dept_emp new
+    ON old.emp_no = new.emp_no
+   AND old.to_date = new.from_date
+ INNER JOIN departments d1
+    ON old.dept_no = d1.dept_no
+ INNER JOIN departments d2
+    ON new.dept_no = d2.dept_no
+ ORDER BY old.emp_no;
+
+SELECT * FROM dept_emp WHERE emp_no = 10018;
+
+use employees;
